@@ -15,7 +15,7 @@
                 HorizontalOptions="Fill">
 
                 <Label x:Name="AccelerometerLabel"
-                    Text="Accelerometer:"
+                    Text="Accelerometer in G:"
                     WidthRequest="110"/>
 
                 <Label x:Name="ACCx"
@@ -25,6 +25,26 @@
                     Text="Y"/>
 
                 <Label x:Name="ACCz"
+                    Text="Z"/>
+
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout
+                Spacing="10"
+                Padding="10,0"
+                HorizontalOptions="Fill">
+
+                <Label x:Name="GyroLabel"
+                    Text="Gyroscope in Radians/s:"
+                     WidthRequest="110"/>
+
+                <Label x:Name="GyroX"
+                    Text="X"/>
+
+                <Label x:Name="GyroY"
+                    Text="Y"/>
+
+                <Label x:Name="GyroZ"
                     Text="Z"/>
 
             </HorizontalStackLayout>
