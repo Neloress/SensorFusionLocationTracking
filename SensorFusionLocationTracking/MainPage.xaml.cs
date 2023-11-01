@@ -4,21 +4,55 @@
 	{
 		int count = 0;
 
+		private AccelerometerData AccData;
+
 		public MainPage()
 		{
 			InitializeComponent();
+
+			EnableAccelerometer();
 		}
 
-		private void OnCounterClicked(object sender, EventArgs e)
+
+		private void EnableAccelerometer()
 		{
-			count++;
-
-			if (count == 1)
-				CounterBtn.Text = $"Clicked {count} time";
+			if (Accelerometer.Default.IsSupported)
+			{
+				Accelerometer.Default.ReadingChanged += Accelerometer_ReadingChanged;
+				Accelerometer.Default.Start(SensorSpeed.UI);
+			}
 			else
-				CounterBtn.Text = $"Clicked {count} times";
+			{
+				throw new Exception("Accelorometer not available");
+			}
+		}
 
-			SemanticScreenReader.Announce(CounterBtn.Text);
+		public void ToggleAccelerometer()
+		{
+			if (Accelerometer.Default.IsSupported)
+			{
+				if (!Accelerometer.Default.IsMonitoring)
+				{
+					// Turn on accelerometer
+					Accelerometer.Default.ReadingChanged += Accelerometer_ReadingChanged;
+					Accelerometer.Default.Start(SensorSpeed.UI);
+				}
+				else
+				{
+					// Turn off accelerometer
+					Accelerometer.Default.Stop();
+					Accelerometer.Default.ReadingChanged -= Accelerometer_ReadingChanged;
+				}
+			}
+		}
+
+		private void Accelerometer_ReadingChanged(object sender, AccelerometerChangedEventArgs e)
+		{
+			AccData = e.Reading;
+
+			ACCx.Text = "X: " + AccData.Acceleration.X.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+			ACCy.Text = "Y: " + AccData.Acceleration.Y.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture);
+			ACCz.Text = "Z: " + AccData.Acceleration.Z.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture);
 		}
 	}
 }
