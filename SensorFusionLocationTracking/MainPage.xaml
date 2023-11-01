@@ -63,6 +63,53 @@
 
             </HorizontalStackLayout>
 
+            <HorizontalStackLayout
+                Spacing="10"
+                Padding="10,0"
+                HorizontalOptions="Fill">
+
+                <Label x:Name="GpsLabel"
+                    Text="GPS:"
+                    WidthRequest="110"/>
+
+                <Label x:Name="GPSlatitude"
+                    Text="Latitude"/>
+
+                <Label x:Name="GPSlongitude"
+                    Text="Longitude"/>
+
+                <Label x:Name="GPSaltitude"
+                    Text="Altitude"/>
+
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout
+                Spacing="10"
+                Padding="10,0"
+                HorizontalOptions="Fill">
+
+                <Label x:Name="GpsAccuracyLabel"
+                    Text="GPS Accuracy in m:"
+                    WidthRequest="110"/>
+
+                <Label x:Name="GPSacc"
+                    Text="Accuracy"/>
+
+                <Label x:Name="GPSVacc"
+                    Text="Vertical Accuracy"/>
+
+            </HorizontalStackLayout>
+
+            <Button
+                x:Name="GPSbutton"
+                Text="Update GPS"
+                Clicked="OnGPSclick">
+            </Button>
+
+            <Entry x:Name="GPStime"
+                Placeholder="Time in s for GPS"/>
+
+
         </VerticalStackLayout>
     </ScrollView>
 

@@ -5,6 +5,7 @@
 		private System.Numerics.Vector3 AccData;
 		private System.Numerics.Vector3 GyroData;
 		private double NorthHeading;
+		private Location LocationData;
 
 		public MainPage()
 		{
@@ -13,6 +14,8 @@
 			EnableAccelerometer();
 			EnableGyroscope();
 			EnableCompass();
+
+			GetGPS(10);
 		}
 
 
@@ -75,6 +78,45 @@
 			NorthHeading = e.Reading.HeadingMagneticNorth;
 
 			CompHeading.Text = "North-Heading: " + NorthHeading.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "°";
+		}
+		private async void OnGPSclick(object sender, EventArgs e)
+		{
+			double time = double.Parse(GPStime.Text, System.Globalization.CultureInfo.InvariantCulture);
+			GetGPS(time);
+
+			if (LocationData == null)
+			{
+				GPSlatitude.Text = "NON";
+				GPSlongitude.Text = "NON";
+				GPSaltitude.Text = "NON";
+
+				GPSacc.Text = "NON";
+				GPSVacc.Text = "NON";
+			}
+            else
+            {
+				GPSlatitude.Text = "Latitude: "+ LocationData.Latitude.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)+ "°";
+				GPSlongitude.Text = "Longitude: " + LocationData.Longitude.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "°";
+				GPSaltitude.Text = "Altitude: " + LocationData.Altitude == null ? "Non" : LocationData.Altitude.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "m";
+
+				GPSacc.Text = "Accuracy: " + LocationData.Accuracy == null ? "Non" : LocationData.Accuracy.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "m";
+				GPSVacc.Text = "VerticalAccuracy: " + LocationData.VerticalAccuracy == null ? "Non" : LocationData.VerticalAccuracy.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "m";
+			}
+		}
+		private async void GetGPS(double timeS)
+		{
+			LocationData = null;
+			try
+			{
+				GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(timeS));
+				Location location = await Geolocation.Default.GetLocationAsync(request);
+
+				LocationData = location;
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("No GPS available");
+			}
 		}
 	}
 }
