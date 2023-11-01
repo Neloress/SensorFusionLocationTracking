@@ -2,15 +2,15 @@
 {
 	public partial class MainPage : ContentPage
 	{
-		int count = 0;
-
-		private AccelerometerData AccData;
+		private System.Numerics.Vector3 AccData;
+		private double NorthHeading;
 
 		public MainPage()
 		{
 			InitializeComponent();
 
 			EnableAccelerometer();
+			EnableCompass();
 		}
 
 
@@ -27,32 +27,31 @@
 			}
 		}
 
-		public void ToggleAccelerometer()
+		private void EnableCompass()
 		{
-			if (Accelerometer.Default.IsSupported)
+			if (Compass.Default.IsSupported)
 			{
-				if (!Accelerometer.Default.IsMonitoring)
-				{
-					// Turn on accelerometer
-					Accelerometer.Default.ReadingChanged += Accelerometer_ReadingChanged;
-					Accelerometer.Default.Start(SensorSpeed.UI);
-				}
-				else
-				{
-					// Turn off accelerometer
-					Accelerometer.Default.Stop();
-					Accelerometer.Default.ReadingChanged -= Accelerometer_ReadingChanged;
-				}
+				Compass.Default.ReadingChanged += Compass_ReadingChanged;
+				Compass.Default.Start(SensorSpeed.UI);
+			}
+			else
+			{
+				throw new Exception("Compass not available");
 			}
 		}
+		private void Compass_ReadingChanged(object sender, CompassChangedEventArgs e)
+		{
+			NorthHeading = e.Reading.HeadingMagneticNorth;
 
+			CompHeading.Text = "North-Heading: " + NorthHeading.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "°";
+		}
 		private void Accelerometer_ReadingChanged(object sender, AccelerometerChangedEventArgs e)
 		{
-			AccData = e.Reading;
+			AccData = e.Reading.Acceleration;
 
-			ACCx.Text = "X: " + AccData.Acceleration.X.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
-			ACCy.Text = "Y: " + AccData.Acceleration.Y.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture);
-			ACCz.Text = "Z: " + AccData.Acceleration.Z.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture);
+			ACCx.Text = "X: " + AccData.X.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+			ACCy.Text = "Y: " + AccData.Y.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture);
+			ACCz.Text = "Z: " + AccData.Z.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture);
 		}
 	}
 }

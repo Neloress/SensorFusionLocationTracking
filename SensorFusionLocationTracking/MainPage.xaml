@@ -18,14 +18,28 @@
                     Text="Accelerometer:"
                     WidthRequest="110"/>
 
-                <Entry x:Name="ACCx"
-                    Placeholder="X"/>
+                <Label x:Name="ACCx"
+                    Text="X"/>
 
-                <Entry x:Name="ACCy"
-                    Placeholder="Y"/>
+                <Label x:Name="ACCy"
+                    Text="Y"/>
 
-                <Entry x:Name="ACCz"
-                    Placeholder="Z"/>
+                <Label x:Name="ACCz"
+                    Text="Z"/>
+
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout
+                Spacing="10"
+                Padding="10,0"
+                HorizontalOptions="Fill">
+
+                <Label x:Name="CompassLabel"
+                    Text="Compass:"
+                    WidthRequest="110"/>
+
+                <Label x:Name="CompHeading"
+                    Text="North-Heading"/>
 
             </HorizontalStackLayout>
 
