@@ -106,6 +106,21 @@
                 Clicked="OnGPSclick">
             </Button>
 
+            <Button
+                x:Name="Resetbutton"
+                Text="Reset"
+                Clicked="OnResetClick">
+            </Button>
+
+            <Label x:Name="Info1"
+                   Text="Dummy"/>
+
+            <Label x:Name="Info2"
+                   Text="Dummy"/>
+
+            <Label x:Name="Info3"
+                   Text="Dummy"/>
+
             <Entry x:Name="GPStime"
                 Placeholder="Time in s for GPS"/>
 
