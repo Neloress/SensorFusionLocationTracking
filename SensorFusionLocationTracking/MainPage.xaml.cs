@@ -31,7 +31,7 @@ namespace SensorFusionLocationTracking
 			EnableCompass();
 
 			//Vector t = new Vector(0, 1, 0, 0);
-			//Matrix test = Matrix.GetRotation(45, 45, 45);
+			Matrix test = Matrix.GetRotation(new Vector(0,0,0,1));
 
 			//Vector m = test * t;
 
@@ -63,9 +63,12 @@ namespace SensorFusionLocationTracking
 							difTimeGyro = element.Item2 - StartTime;
 
 						//anteilig verwenden für acc
-						Matrix gyroM = Matrix.GetRotation(element.Item1 * (1.0 / (difTimeGyro / 1000.0)));
+						if (difTimeGyro != 0 && element.Item1.Length()>0.1)
+						{
+							Matrix gyroM = Matrix.GetRotation(element.Item1 * (1.0 / (difTimeGyro / 1000.0)));
 
-						m = gyroM * m;
+							m = gyroM * m;
+						}
 
 						lastTimeGyro = element.Item2;
 						break;
@@ -156,6 +159,15 @@ namespace SensorFusionLocationTracking
 			//test
 			SetOrientation();
 			Info1.Text = Orientation.ToString();
+
+			Vector xAxis = (Orientation*(new Vector(1,0,0,0))).Normalize();
+			Vector yAxis = (Orientation * (new Vector(0, 1, 0, 0))).Normalize();
+			Vector zAxis = (Orientation * (new Vector(0, 0, 1, 0))).Normalize();
+
+			Info2.Text = xAxis.ToString() + "\n" + yAxis.ToString()+ "\n" + zAxis.ToString();
+
+			Info3.Text = (xAxis * yAxis) + "    " + (xAxis * zAxis);
+
 		}
 		private void Compass_ReadingChanged(object sender, CompassChangedEventArgs e)
 		{
@@ -164,7 +176,8 @@ namespace SensorFusionLocationTracking
 			CompHeading.Text = "North-Heading: " + NorthHeading.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + "°";
 		}
 		private async void OnResetClick(object sender, EventArgs e)
-		{ 
+		{
+			StartTimeSet = false;
 			Log.Clear();
 		}
 		
