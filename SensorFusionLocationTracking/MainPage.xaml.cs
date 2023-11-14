@@ -30,12 +30,22 @@ namespace SensorFusionLocationTracking
 			EnableGyroscope();
 			EnableCompass();
 
-			//Vector t = new Vector(0, 1, 0, 0);
-			Matrix test = Matrix.GetRotation(new Vector(0,0,0,1));
+			//Random random = new Random();
+			//Vector t = new Vector(random.NextDouble(), random.NextDouble(), random.NextDouble(), 1);
 
-			//Vector m = test * t;
+			//Matrix test = Matrix.GetRotation(t);
 
-			//GetGPS(10);
+			////Vector m = test * t;
+
+			////GetGPS(10);
+
+			//Vector xAxis = (test * (new Vector(1, 0, 0, 0))).Normalize();
+			//Vector yAxis = (test * (new Vector(0, 1, 0, 0))).Normalize();
+			//Vector zAxis = (test * (new Vector(0, 0, 1, 0))).Normalize();
+
+			//Info2.Text = xAxis.ToString() + "\n" + yAxis.ToString() + "\n" + zAxis.ToString();
+
+			//Info3.Text = (xAxis * yAxis) + "    " + (xAxis * zAxis);
 		}
 		private void SetOrientation()
 		{
@@ -166,7 +176,7 @@ namespace SensorFusionLocationTracking
 
 			Info2.Text = xAxis.ToString() + "\n" + yAxis.ToString()+ "\n" + zAxis.ToString();
 
-			Info3.Text = (xAxis * yAxis) + "    " + (xAxis * zAxis);
+			Info3.Text = (xAxis * yAxis).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + "    " + (xAxis * zAxis).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
 
 		}
 		private void Compass_ReadingChanged(object sender, CompassChangedEventArgs e)
