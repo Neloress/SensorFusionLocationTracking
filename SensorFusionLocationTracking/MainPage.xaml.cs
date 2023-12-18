@@ -1,4 +1,7 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Net.Sockets;
+using System.Net;
+using System.Runtime.CompilerServices;
+using System.Globalization;
 
 namespace SensorFusionLocationTracking
 {
@@ -8,6 +11,9 @@ namespace SensorFusionLocationTracking
 	}
 	public partial class MainPage : ContentPage
 	{
+		private string IP = "192.168.178.47";
+		private string Port = "13000";
+
 		private System.Numerics.Vector3 AccData;
 		private System.Numerics.Vector3 GyroData;
 		private double NorthHeading;
@@ -73,7 +79,7 @@ namespace SensorFusionLocationTracking
 							difTimeGyro = element.Item2 - StartTime;
 
 						//anteilig verwenden für acc
-						if (difTimeGyro != 0 && element.Item1.Length()>0.1)
+						if (difTimeGyro != 0 && element.Item1.Length() > 0.1)
 						{
 							Matrix gyroM = Matrix.GetRotation(element.Item1 * (1.0 / (difTimeGyro / 1000.0)));
 
@@ -170,11 +176,11 @@ namespace SensorFusionLocationTracking
 			SetOrientation();
 			Info1.Text = Orientation.ToString();
 
-			Vector xAxis = (Orientation*(new Vector(1,0,0,0))).Normalize();
+			Vector xAxis = (Orientation * (new Vector(1, 0, 0, 0))).Normalize();
 			Vector yAxis = (Orientation * (new Vector(0, 1, 0, 0))).Normalize();
 			Vector zAxis = (Orientation * (new Vector(0, 0, 1, 0))).Normalize();
 
-			Info2.Text = xAxis.ToString() + "\n" + yAxis.ToString()+ "\n" + zAxis.ToString();
+			Info2.Text = xAxis.ToString() + "\n" + yAxis.ToString() + "\n" + zAxis.ToString();
 
 			Info3.Text = (xAxis * yAxis).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + "    " + (xAxis * zAxis).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
 
@@ -190,7 +196,70 @@ namespace SensorFusionLocationTracking
 			StartTimeSet = false;
 			Log.Clear();
 		}
-		
+		private async Task<bool> CheckForNetworkPermission()
+		{
+			var status = await Permissions.CheckStatusAsync<Permissions.NetworkState>();
+
+			if (status == PermissionStatus.Granted)
+				return true;
+
+			if (Permissions.ShouldShowRationale<Permissions.NetworkState>())
+			{
+				await Shell.Current.DisplayAlert("Needs permissions", "BECAUSE!!!", "OK");
+			}
+
+			status = await Permissions.RequestAsync<Permissions.NetworkState>();
+
+			return status == PermissionStatus.Granted;
+		}
+		private async void OnSendClick(object sender, EventArgs e)
+		{
+			if (!await CheckForNetworkPermission())
+			{
+				throw new Exception("No permission");
+			}
+
+			string messageGyro = "Gyro\nTimeStamp;X;Y;Z\n";
+			string messageAcc = "Acc\nTimeStamp;X;Y;Z\n";
+
+			foreach (Tuple<Vector, long, SensorType> tuple in Log)
+			{
+				if (tuple.Item3 == SensorType.Gyro)
+				{
+					messageGyro += tuple.Item2 + ";" + tuple.Item1.X.ToString(CultureInfo.InvariantCulture) + ";" + tuple.Item1.Y.ToString(CultureInfo.InvariantCulture) + ";" + tuple.Item1.Z.ToString(CultureInfo.InvariantCulture) + "\n";
+				}
+				else if (tuple.Item3 == SensorType.Acc)
+				{
+					messageAcc += tuple.Item2 + ";" + tuple.Item1.X.ToString(CultureInfo.InvariantCulture) + ";" + tuple.Item1.Y.ToString(CultureInfo.InvariantCulture) + ";" + tuple.Item1.Z.ToString(CultureInfo.InvariantCulture) + "\n";
+				}
+				else
+				{
+					throw new Exception("Wrong Sensor type");
+				}
+			}
+
+			string message = messageGyro + "$" + messageAcc;
+
+			try
+			{
+				var ipEndPoint = new IPEndPoint(IPAddress.Parse(IP), int.Parse(Port));
+				using TcpClient tcpClient = new();
+				tcpClient.Connect(ipEndPoint);
+
+				// Prefer using declaration to ensure the instance is Disposed later.
+				//using TcpClient client = new TcpClient(IPpc.Text, int.Parse(Portpc.Text));
+				// Get a client stream for reading and writing.
+				NetworkStream stream = tcpClient.GetStream();
+
+				Byte[] data = System.Text.Encoding.ASCII.GetBytes(message + "%");
+				stream.Write(data, 0, data.Length);
+			}
+			catch (Exception error)
+			{
+				throw new Exception("Send Error");
+			}
+		}
+
 		private async void OnGPSclick(object sender, EventArgs e)
 		{
 			double time = double.Parse(GPStime.Text, System.Globalization.CultureInfo.InvariantCulture);

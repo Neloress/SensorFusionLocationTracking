@@ -112,6 +112,12 @@
                 Clicked="OnResetClick">
             </Button>
 
+            <Button
+                x:Name="Sendbutton"
+                Text="Send"
+                Clicked="OnSendClick">
+            </Button>
+
             <Label x:Name="Info1"
                    Text="Dummy"/>
 
