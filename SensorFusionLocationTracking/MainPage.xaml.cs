@@ -174,22 +174,22 @@ namespace SensorFusionLocationTracking
 
 			//test
 			SetOrientation();
-			Info1.Text = Orientation.ToString();
+			//Info1.Text = Orientation.ToString();
 
 			Vector xAxis = (Orientation * (new Vector(1, 0, 0, 0))).Normalize();
 			Vector yAxis = (Orientation * (new Vector(0, 1, 0, 0))).Normalize();
 			Vector zAxis = (Orientation * (new Vector(0, 0, 1, 0))).Normalize();
 
-			Info2.Text = xAxis.ToString() + "\n" + yAxis.ToString() + "\n" + zAxis.ToString();
+			//Info2.Text = xAxis.ToString() + "\n" + yAxis.ToString() + "\n" + zAxis.ToString();
 
-			Info3.Text = (xAxis * yAxis).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + "    " + (xAxis * zAxis).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+			//Info3.Text = (xAxis * yAxis).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + "    " + (xAxis * zAxis).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
 
 		}
 		private void Compass_ReadingChanged(object sender, CompassChangedEventArgs e)
 		{
 			NorthHeading = e.Reading.HeadingMagneticNorth;
 
-			CompHeading.Text = "North-Heading: " + NorthHeading.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + "°";
+			//CompHeading.Text = "North-Heading: " + NorthHeading.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + "°";
 		}
 		private async void OnResetClick(object sender, EventArgs e)
 		{
@@ -262,26 +262,26 @@ namespace SensorFusionLocationTracking
 
 		private async void OnGPSclick(object sender, EventArgs e)
 		{
-			double time = double.Parse(GPStime.Text, System.Globalization.CultureInfo.InvariantCulture);
+			double time = 1;// double.Parse(GPStime.Text, System.Globalization.CultureInfo.InvariantCulture);
 			GetGPS(time);
 
 			if (LocationData == null)
 			{
-				GPSlatitude.Text = "NON";
-				GPSlongitude.Text = "NON";
-				GPSaltitude.Text = "NON";
+				//GPSlatitude.Text = "NON";
+				//GPSlongitude.Text = "NON";
+				//GPSaltitude.Text = "NON";
 
-				GPSacc.Text = "NON";
-				GPSVacc.Text = "NON";
+				//GPSacc.Text = "NON";
+				//GPSVacc.Text = "NON";
 			}
 			else
 			{
-				GPSlatitude.Text = "Latitude: " + LocationData.Latitude.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + "°";
-				GPSlongitude.Text = "Longitude: " + LocationData.Longitude.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + "°";
-				GPSaltitude.Text = "Altitude: " + LocationData.Altitude == null ? "Non" : LocationData.Altitude.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "m";
+				//GPSlatitude.Text = "Latitude: " + LocationData.Latitude.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + "°";
+				//GPSlongitude.Text = "Longitude: " + LocationData.Longitude.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + "°";
+				//GPSaltitude.Text = "Altitude: " + LocationData.Altitude == null ? "Non" : LocationData.Altitude.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "m";
 
-				GPSacc.Text = "Accuracy: " + LocationData.Accuracy == null ? "Non" : LocationData.Accuracy.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "m";
-				GPSVacc.Text = "VerticalAccuracy: " + LocationData.VerticalAccuracy == null ? "Non" : LocationData.VerticalAccuracy.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "m";
+				//GPSacc.Text = "Accuracy: " + LocationData.Accuracy == null ? "Non" : LocationData.Accuracy.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "m";
+				//GPSVacc.Text = "VerticalAccuracy: " + LocationData.VerticalAccuracy == null ? "Non" : LocationData.VerticalAccuracy.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "m";
 			}
 		}
 		private async void GetGPS(double timeS)
